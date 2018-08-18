@@ -145,8 +145,7 @@ NON_TB_VCOM_FLAGS	:= -check_synthesis
 
 # Flags for use with vlog (verilog compiler)
 VLOG_FLAGS 			:= $(MODELSIM_FLAG) \
-					   -work $(VLIB_NAME) \
-					   -mixedsvvh
+					   -work $(VLIB_NAME)
 
 # Flags to use with modules we will synthesise (IE not testbenches)
 NON_TB_VLOG_FLAGS	:=
