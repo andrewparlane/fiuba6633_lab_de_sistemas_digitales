@@ -39,6 +39,10 @@ all: srcs tb_srcs
 
 .PHONY: common all
 
+# tests
+alu: all
+	@$(call VSIM_CMD, alu_tb)
+
 # delete the library and all compiled files
 clean: helper_clean
 	$(call DEL_VLIB_CMD, $(COMMON_LIB))
