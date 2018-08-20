@@ -1,0 +1,41 @@
+Stages:
+    sumarry:
+        Instruction Fetch (IF)
+        Argument Fetch and decode (AFD)
+        Memory (MEM)
+        Execute and Write Back (EXWB)
+
+    details:
+        IF:
+            inst <= _iInstMemData
+            _oInstMemAddr <= PC | 0x01
+        AFD:
+            arg <= _iInstMemData
+            decode inst
+                _oDataMemAddr
+                    storei: <= A
+                    others: <= _iInstMemData
+                _oDataMemWData
+                    storei: <= _iInstMemData
+                    others: <= A
+                _oDataMemWrite
+                    store / storei: <= 1
+                    others: <= 0
+        MEM:
+            mem <= _iDataMemRData
+            decode inst
+                PC
+                    jump:       <= PC + arg
+                    jumpFlag:   <= flag ? PC + arg: PC + 2
+                    others:     <= PC + 2
+            _oDataMemWrite <= 0
+        EXWB:
+            decode inst
+                A
+                    load:               <= mem
+                    loadi:              <= arg
+                    arith / logical:    <= OP(A, mem, Carry)
+                    arithi / logicali:  <= OP(A, arg, Carry)
+                FLAGS
+                    arith[i] / logical[i]: <= aluFlags
+
