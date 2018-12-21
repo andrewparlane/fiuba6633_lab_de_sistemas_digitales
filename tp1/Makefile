@@ -43,6 +43,11 @@ all: srcs tb_srcs
 alu: all
 	@$(call VSIM_CMD, alu_tb)
 
+reset_sync: all
+	@$(call VSIM_CMD, reset_sync_tb)
+
+.PHONY: alu reset_sync
+
 # delete the library and all compiled files
 clean: helper_clean
 	$(call DEL_VLIB_CMD, $(COMMON_LIB))

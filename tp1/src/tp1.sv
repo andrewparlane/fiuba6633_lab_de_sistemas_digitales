@@ -28,6 +28,8 @@ module tp1
     // Variables
     // ==============================================================
 
+    logic rst;
+
     // the aluXXX vars are wires and not registered
     logic [7:0] aluArgB;
     logic       aluArgC;    // carry bit
@@ -59,6 +61,16 @@ module tp1
     logic       decodeALU;
 
     // ==============================================================
+    // Reset Syncroniser
+    // ==============================================================
+    reset_sync resetSync
+    (
+        ._iClk          (_iClk),
+        ._iReset        (_iReset),
+        ._oReset        (rst)
+    );
+
+    // ==============================================================
     // Decode
     // ==============================================================
 
@@ -77,8 +89,8 @@ module tp1
     // state machine
     // ==============================================================
 
-    always_ff @(posedge _iClk, posedge _iReset) begin
-        if (_iReset) begin
+    always_ff @(posedge _iClk, posedge rst) begin
+        if (rst) begin
             pc          <= 0;
             inst        <= 0;
             arg         <= 0;
