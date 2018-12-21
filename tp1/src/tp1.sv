@@ -155,7 +155,7 @@ module tp1
                         ((decodeOp == Operation_JZ) && flagZero) ||
                         ((decodeOp == Operation_JC) && flagCarry) ||
                         ((decodeOp == Operation_JN) && flagNeg)) begin
-                        pc <= pc + arg;
+                        pc <= pc + arg + 2'd2;
                     end
                     else begin
                         pc <= pc + 2'd2;
