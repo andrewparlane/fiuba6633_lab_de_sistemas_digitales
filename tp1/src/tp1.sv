@@ -4,10 +4,13 @@ module tp1
 (
     input logic         _iClk,
     input logic         _iReset,
-    input logic [7:0]   _iInstMemData,
-    input logic [7:0]   _iDataMemRData,
 
+    // Instruction ROM signals
+    input  logic [7:0]  _iInstMemData,
     output logic [7:0]  _oInstMemAddr,
+
+    // Data RAM signals
+    input  logic [7:0]  _iDataMemRData,
     output logic [7:0]  _oDataMemAddr,
     output logic [7:0]  _oDataMemWData,
     output logic        _oDataMemWrite
