@@ -119,7 +119,7 @@ module tp1
                     inst <= _iInstMemData;
 
                     // Request the argument
-                    _oInstMemAddr <= pc | 'h1;
+                    _oInstMemAddr <= pc | 1'h1;
 
                     state <= State_AFD;
                 end
@@ -131,10 +131,16 @@ module tp1
                     // Set up data mem signals
                     if ((decodeOp == Operation_STORE) &&
                         decodeImm) begin
+                        // STOREI - write the argument to RAM
                         _oDataMemAddr <= accumulator;
                         _oDataMemWData <= _iInstMemData;
                     end
                     else begin
+                        // If it's a STORE (note STOREI) then the argument
+                        // is the RAM address, and the data to write is
+                        // the accumulator.
+                        // If it's not a STORE operation then we just
+                        // don't assert Write
                         _oDataMemAddr <= _iInstMemData;
                         _oDataMemWData <= accumulator;
                     end
@@ -142,6 +148,12 @@ module tp1
                     if (decodeOp == Operation_STORE) begin
                         _oDataMemWrite <= 1;
                     end
+
+                    // The next pc is pc + 2
+                    // unless there's a jump, in which case it's
+                    // pc + 2 + arg
+                    // so update pc to pc + 2 here
+                    pc <= pc + 2'd2;
 
                     state <= State_MEM;
                 end
@@ -155,10 +167,7 @@ module tp1
                         ((decodeOp == Operation_JZ) && flagZero) ||
                         ((decodeOp == Operation_JC) && flagCarry) ||
                         ((decodeOp == Operation_JN) && flagNeg)) begin
-                        pc <= pc + arg + 2'd2;
-                    end
-                    else begin
-                        pc <= pc + 2'd2;
+                        pc <= pc + arg;
                     end
 
                     state <= State_EXWB;
@@ -218,7 +227,5 @@ module tp1
         ._oFlagZero     (aluFlagZero),
         ._oFlagNeg      (aluFlagNeg)
     );
-
-
 
 endmodule
