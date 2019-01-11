@@ -25,7 +25,7 @@
 
 `timescale 1ns/1ps
 
-`define RAM_FILE_PATH "../ram_mem.dat"
+`define RAM_FILE_PATH "ram_mem.dat"
 
 module tp1_tb #
 (
