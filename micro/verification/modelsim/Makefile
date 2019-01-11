@@ -13,11 +13,11 @@ else
 endif
 
 # Directories
-SIM_DIR			= sim
+SIM_DIR			= .
 WAVES_DIR		= $(SIM_DIR)/waves
-SRC_DIR			= src
+SRC_DIR			= ../../rtl
 PKG_DIR			= $(SRC_DIR)/pkg
-TB_SRC_DIR		= $(SRC_DIR)/tb
+TB_SRC_DIR		= ../tb
 
 # src files
 SRCS	= $(wildcard $(PKG_DIR)/*.sv) \
@@ -32,7 +32,7 @@ VSIM_FLAGS		=
 
 # Now include our helper.mk which has all the rules we need
 # to create our library, compile and simulate our test benches
-include ../helper/helper.mk
+include helper.mk
 
 # default rule is to create the library, and compile all the components
 all: srcs tb_srcs
@@ -47,25 +47,25 @@ reset_sync: all
 	@$(call VSIM_CMD, reset_sync_tb)
 
 mult_test: all
-	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=mult_test -gROM_FILE_PATH=tests/mult_test.dat)
+	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=mult_test -gROM_FILE_PATH=../tests/mult_test.dat)
 
 nand_test: all
-	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=nand_test -gROM_FILE_PATH=tests/nand_test.dat)
+	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=nand_test -gROM_FILE_PATH=../tests/nand_test.dat)
 
 xor_test: all
-	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=xor_test -gROM_FILE_PATH=tests/xor_test.dat)
+	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=xor_test -gROM_FILE_PATH=../tests/xor_test.dat)
 
 nor_test: all
-	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=nor_test -gROM_FILE_PATH=tests/nor_test.dat)
+	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=nor_test -gROM_FILE_PATH=../tests/nor_test.dat)
 
 xnor_test: all
-	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=xnor_test -gROM_FILE_PATH=tests/xnor_test.dat)
+	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=xnor_test -gROM_FILE_PATH=../tests/xnor_test.dat)
 
 add_test: all
-	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=add_test -gROM_FILE_PATH=tests/add_test.dat)
+	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=add_test -gROM_FILE_PATH=../tests/add_test.dat)
 
 sub_test: all
-	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=sub_test -gROM_FILE_PATH=tests/sub_test.dat)
+	@$(call VSIM_CMD, tp1_tb, -gTEST_NAME=sub_test -gROM_FILE_PATH=../tests/sub_test.dat)
 
 all_tests: mult_test nand_test xor_test xnor_test nor_test add_test sub_test
 
