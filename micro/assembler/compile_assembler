@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo ""
+gcc  -Wall -o lsd_asm lsd_asm.c
+echo ""
+echo "lsdasm assembler program created!!!"
+echo ""
+

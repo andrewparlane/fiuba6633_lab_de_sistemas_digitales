@@ -1,0 +1,104 @@
+#!/bin/bash
+
+for (( i=1; i<=100; i++ ))
+do
+   echo ""
+done
+
+echo "##########################################################################################"
+echo "#                                                                                        #"
+echo "#                                   Simulation Script                                    #"
+echo "#                                                                                        #"
+echo "##########################################################################################"
+echo "#                                                                                        #"
+echo "#  Version 1.0                                                                           #"
+echo "#  Jun. 14, 2014                                                                         #"
+echo "#                                                                                        #"
+echo "##########################################################################################"
+echo ""
+echo ""
+echo ""
+echo ""
+
+rm -rf ./waves/*
+
+if [ "$1" == "-vcs" ]; then
+   temp_v_list1=`find ./ -type f -name "*.v"`
+   temp_v_list2=`find ../rtl -type f -name "*.v"`
+   temp_v_list="${temp_v_list1} ${temp_v_list2}"
+   for f in ${temp_v_list}
+   do
+      cp -f $f ./waves/
+   done
+   temp_v_list=`find ./waves -type f -name "*.v"`
+   timescale="1ns/1ps"
+   for f in ${temp_v_list}
+   do
+      tscale=`cat ${f} | grep "timescale"`
+      tscale=`echo ${tscale} | cut -d ' ' -f2`
+      if [ "$tscale" != "" ]; then
+         timescale="$tscale"
+      fi
+   done
+   for f in ${temp_v_list}
+   do
+      tscale=`cat ${f} | grep "timescale"`
+      tscale=`echo ${tscale} | cut -d ' ' -f2`
+      if [ "$tscale" != "" ]; then
+         echo "" > ./waves/temp.v
+         cat $f >> ./waves/temp.v
+         mv ./waves/temp.v $f
+      else
+         echo "\`timescale $timescale" > ./waves/temp.v
+         cat ${f} >> ./waves/temp.v
+         mv ./waves/temp.v ${f}
+      fi
+   done
+   cp *.dat ./waves/
+   cd ./waves
+   vlist=""
+   for f in ${temp_v_list}
+   do
+      f1=`echo $f | cut -d '/' -f3`
+      vlist="$vlist $f1"
+   done
+   vcs \
+      +incdir+../rtl \
+      $vlist \
+      -l vcs.log \
+      +vcs+lic+wait \
+      +warn=all \
+      +lint=all \
+      -sverilog \
+      -debug
+   echo "dump  -add / -aggregates -depth 0" > simv.tcl
+   echo "run" >> simv.tcl
+   echo "quit" >> simv.tcl
+   ./simv \
+      -ucli \
+      -do simv.tcl \
+      -l sim.log \
+
+   mkdir ../temp
+   mv sim.log ../temp/sim.log
+   mv vcs.log ../temp/vcs.log
+   mv inter.vpd ../temp/microprocessor.vpd
+   rm -rf *
+   mv ../temp/* ./
+   rm -rf ../temp
+   cd ..
+else
+   if [ -f ./waves/tb_run ]; then
+      rm ./waves/tb_run
+   fi
+   iverilog \
+      -I ../rtl/ \
+      -g2001 \
+      -o ./waves/tb_run \
+      ../rtl/*.v ./*.v
+   if [ -f ./waves/tb_run ]; then
+      vvp -n -l ./waves/sim.log ./waves/tb_run
+   fi
+fi
+
+echo ""

@@ -1,0 +1,104 @@
+0x00: 	LOADI	A, 0;
+0x02: 	STORE	A, 0;
+0x04: 	STORE	A, 1;
+
+0x06: 	<$begin>:
+0x06: 	LOADI	A, 0;
+0x08: 	STORE	A, 2;
+0x0a: 	STORE	A, 3;
+0x0c: 	STORE	A, 4;
+0x0e: 	STORE	A, 5;
+0x10: 	LOAD	A, 0;
+0x12: 	STORE	A, 4;
+0x14: 	LOADI	A, 8;
+0x16: 	STORE	A, 6;
+
+0x18: 	<$iter1>:
+0x18: 	LOAD	A, 1;
+0x1a: 	NORI	A, 254;
+0x1c: 	JUMP	$checkb;
+
+0x1e: 	<$iter2>:
+0x1e: 	LOAD	A, 1;
+0x20: 	NORI	A, 253;
+0x22: 	JUMP	$checkb;
+
+0x24: 	<$iter3>:
+0x24: 	LOAD	A, 1;
+0x26: 	NORI	A, 251;
+0x28: 	JUMP	$checkb;
+
+0x2a: 	<$iter4>:
+0x2a: 	LOAD	A, 1;
+0x2c: 	NORI	A, 247;
+0x2e: 	JUMP	$checkb;
+
+0x30: 	<$iter5>:
+0x30: 	LOAD	A, 1;
+0x32: 	NORI	A, 239;
+0x34: 	JUMP	$checkb;
+
+0x36: 	<$iter6>:
+0x36: 	LOAD	A, 1;
+0x38: 	NORI	A, 223;
+0x3a: 	JUMP	$checkb;
+
+0x3c: 	<$iter7>:
+0x3c: 	LOAD	A, 1;
+0x3e: 	NORI	A, 191;
+0x40: 	JUMP	$checkb;
+
+0x42: 	<$iter8>:
+0x42: 	LOAD	A, 1;
+0x44: 	NORI	A, 127;
+
+0x46: 	<$checkb>:
+0x46: 	JZ	$loady0;
+0x48: 	JUMP	$starta;
+
+0x4a: 	<$loady0>:
+0x4a: 	LOAD	A, 2;
+0x4c: 	ADD	A, 4;
+0x4e: 	STORE	A, 2;
+0x50: 	LOAD	A, 3;
+0x52: 	ADDC	A, 5;
+0x54: 	STORE	A, 3;
+
+0x56: 	<$starta>:
+0x56: 	LOAD	A, 4;
+0x58: 	ADD	A, 4;
+0x5a: 	STORE	A, 4;
+0x5c: 	LOAD	A, 5;
+0x5e: 	ADDC	A, 5;
+0x60: 	STORE	A, 5;
+0x62: 	LOAD	A, 6;
+0x64: 	SUBI	A, 1;
+0x66: 	JZ	$end;
+0x68: 	STORE	A, 6;
+0x6a: 	SUBI	A, 1;
+0x6c: 	JZ	$iter8;
+0x6e: 	SUBI	A, 1;
+0x70: 	JZ	$iter7;
+0x72: 	SUBI	A, 1;
+0x74: 	JZ	$iter6;
+0x76: 	SUBI	A, 1;
+0x78: 	JZ	$iter5;
+0x7a: 	SUBI	A, 1;
+0x7c: 	JZ	$iter4;
+0x7e: 	SUBI	A, 1;
+0x80: 	JZ	$iter3;
+0x82: 	SUBI	A, 1;
+0x84: 	JZ	$iter2;
+
+0x86: 	<$end>:
+0x86: 	LOAD	A, 0;
+0x88: 	ADDI	A, 1;
+0x8a: 	STORE	A, 0;
+0x8c: 	JC	$incb;
+0x8e: 	JUMP	$begin;
+
+0x90: 	<$incb>:
+0x90: 	LOAD	A, 1;
+0x92: 	ADDI	A, 1;
+0x94: 	STORE	A, 1;
+0x96: 	JUMP	$begin;
