@@ -1,6 +1,6 @@
 import cpu_pkg::*;
 
-module tp1
+module micro
 (
     input logic         _iClk,
     input logic         _iReset,

@@ -68,7 +68,7 @@ do
     fi
 done
 echo $vlist
-vcs -top tp1_tb \
+vcs -top micro_tb\
     +incdir+../rtl \
     $vlist \
     -l vcs.log \

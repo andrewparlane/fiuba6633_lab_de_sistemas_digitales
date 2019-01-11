@@ -27,7 +27,7 @@
 
 `define RAM_FILE_PATH "ram_mem.dat"
 
-module tp1_tb #
+module micro_tb #
 (
     // Test names: mult_test/nand_test/xor_test/nor_test/add_test/sub_test
     parameter TEST_NAME = "mult_test",
@@ -51,18 +51,16 @@ module tp1_tb #
    // --------------------------------------------------------------------
    // Device under verification (DUV)
    // --------------------------------------------------------------------
-   tp1 duv(
-      ._iClk            (tb_clk),
-      ._iReset          (tb_rst),
+   micro duv(._iClk            (tb_clk),
+             ._iReset          (tb_rst),
 
-      ._iInstMemData    (tb_rom_word),
-      ._oInstMemAddr    (tb_rom_addr),
+             ._iInstMemData    (tb_rom_word),
+             ._oInstMemAddr    (tb_rom_addr),
 
-      ._oDataMemWData   (tb_ram_word_wr),
-      ._iDataMemRData   (tb_ram_word_rd),
-      ._oDataMemAddr    (tb_ram_addr),
-      ._oDataMemWrite   (tb_ram_write_ena)
-   );
+             ._oDataMemWData   (tb_ram_word_wr),
+             ._iDataMemRData   (tb_ram_word_rd),
+             ._oDataMemAddr    (tb_ram_addr),
+             ._oDataMemWrite   (tb_ram_write_ena));
    // --------------------------------------------------------------------
 
    // --------------------------------------------------------------------
