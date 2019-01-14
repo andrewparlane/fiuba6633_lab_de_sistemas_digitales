@@ -22,7 +22,7 @@ proc find_files { basedir pattern } {
     foreach dirName [glob -nocomplain -type {d  r} -path $basedir *] {
         # Recusively call the routine on the sub directory and append any
         # new files to the results
-        set subDirList [findFiles $dirName $pattern]
+        set subDirList [find_files $dirName $pattern]
         if { [llength $subDirList] > 0 } {
             foreach subDirFile $subDirList {
                 lappend fileList $subDirFile
