@@ -50,6 +50,7 @@ set access_internal_pins   "true"
 # Defining variables
 #################################################################################
 set rtl_dir "../../../../rtl"
+set pkg_dir "${rtl_dir}/pkg"
 
 #################################################################################
 # Source script files
@@ -114,9 +115,10 @@ puts ""
 set rtl_files_v     [find_files ${rtl_dir} "*.v"]
 set rtl_files_vhdl  [find_files ${rtl_dir} "*.vhd"]
 set rtl_files_sv    [find_files ${rtl_dir} "*.sv"]
+set pkg_files_sv    [find_files ${pkg_dir} "*.sv"]
 set header_files_v  [find_files ${rtl_dir} "*.vh"]
 set header_files_sv [find_files ${rtl_dir} "*.svh"]
-if {${rtl_files_v}=="" && ${rtl_files_vhdl}==""} {
+if {${rtl_files_v}=="" && ${rtl_files_vhdl}=="" && ${rtl_files_sv}==""} {
    puts "ERROR: No RTL files found in source directory."
    puts ""
    puts ""
@@ -131,6 +133,14 @@ foreach filename ${rtl_files_v} {
    puts "         ${filename}"
 }
 foreach filename ${rtl_files_vhdl} {
+   set filename [split ${filename} "/"]
+   set filename [lindex ${filename} end]
+   puts "         ${filename}"
+}
+foreach filename ${pkg_files_sv} {
+   # remove from rtl_files_sv
+   set rtl_files_sv [lsearch -all -inline -not -exact $rtl_files_sv $filename]
+
    set filename [split ${filename} "/"]
    set filename [lindex ${filename} end]
    puts "         ${filename}"
@@ -192,6 +202,9 @@ if {${rtl_files_v}!=""} {
 }
 if {${rtl_files_vhdl}!=""} {
    analyze -library WORK -format vhdl ${rtl_files_vhdl}
+}
+if {${pkg_files_sv}!=""} {
+   analyze -library WORK -format sverilog ${pkg_files_sv}
 }
 if {${rtl_files_sv}!=""} {
    analyze -library WORK -format sverilog ${rtl_files_sv}
