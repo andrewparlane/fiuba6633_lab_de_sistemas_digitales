@@ -19,7 +19,7 @@ module reset_sync
         end
         else begin
             tmp <= 0;
-            _oReset = tmp;
+            _oReset <= tmp;
         end
     end
 
