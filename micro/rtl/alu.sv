@@ -51,7 +51,7 @@ module alu
             end
 
             default: begin
-                // do nothing
+                tmp = 0;
             end
         endcase
 
