@@ -36,9 +36,9 @@ package cpu_pkg;
     localparam [7:0] OP_JC      = 'hC2;
     localparam [7:0] OP_JN      = 'hC3;
 
-    typedef enum
+    typedef enum logic [3:0]
     {
-        Operation_LOAD,
+        Operation_LOAD = 'd0,
         Operation_STORE,
         Operation_ADD,
         Operation_SUB,
@@ -49,6 +49,6 @@ package cpu_pkg;
         Operation_JUMP,
         Operation_JZ,
         Operation_JC,
-        Operation_JN
+        Operation_JN    // 'd11 -> 4 bits
     } Operation;
 endpackage

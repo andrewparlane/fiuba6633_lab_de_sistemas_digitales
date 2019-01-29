@@ -16,12 +16,12 @@ module micro
     output logic        _oDataMemWrite
 );
 
-    typedef enum
+    typedef enum logic [1:0]
     {
-        State_IF,   // Instruction Fetch
-        State_AFD,  // Argument Fetch and decode
-        State_MEM,  // Memory
-        State_EXWB  // Execute and Write Back
+        State_IF = 'd0,     // Instruction Fetch
+        State_AFD,          // Argument Fetch and decode
+        State_MEM,          // Memory
+        State_EXWB          // Execute and Write Back
     } State;
 
     // ==============================================================
