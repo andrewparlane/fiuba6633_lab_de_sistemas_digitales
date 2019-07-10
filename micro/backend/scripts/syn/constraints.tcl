@@ -88,6 +88,6 @@
 # Edit synthesis contraints here!!!
 #####################################################################################
 
-create_clock -period 100 MHz -name _iClk _iClk
+create_clock -name _iClk -period 10 [get_ports _iClk]
 
-set_false_path -from [get_ports <_iReset>]
+set_false_path -from [get_ports _iReset]
