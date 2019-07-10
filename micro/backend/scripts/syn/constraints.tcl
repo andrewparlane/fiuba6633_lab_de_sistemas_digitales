@@ -91,3 +91,8 @@
 create_clock -name _iClk -period 10 [get_ports _iClk]
 
 set_false_path -from [get_ports _iReset]
+
+set_input_delay -clock [get_clock _iClk] -max 8.9 [get_ports _iInstMemData]
+set_input_delay -clock [get_clock _iClk] -max 8.9 [get_ports _iDataMemRData]
+
+
