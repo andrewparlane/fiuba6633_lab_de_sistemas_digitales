@@ -128,26 +128,11 @@ module micro
                     // Register the read argument
                     arg <= _iInstMemData;
 
-                    // Set up data mem signals
-                    if ((decodeOp == Operation_STORE) &&
-                        decodeImm) begin
-                        // STOREI - write the argument to RAM
-                        _oDataMemAddr <= accumulator;
-                        _oDataMemWData <= _iInstMemData;
-                    end
-                    else begin
-                        // If it's a STORE (note STOREI) then the argument
-                        // is the RAM address, and the data to write is
-                        // the accumulator.
-                        // If it's not a STORE operation then we just
-                        // don't assert Write
-                        _oDataMemAddr <= _iInstMemData;
-                        _oDataMemWData <= accumulator;
-                    end
-
-                    if (decodeOp == Operation_STORE) begin
-                        _oDataMemWrite <= 1;
-                    end
+                    // Many instructions require us to read from data memory
+                    // all of those use the instruction argument as the address to
+                    // read from. There's no harm in always reading, so just do it.
+                    _oDataMemAddr <= _iInstMemData;
+                    _oDataMemWData <= accumulator;
 
                     // The next pc is pc + 2
                     // unless there's a jump, in which case it's
@@ -170,10 +155,32 @@ module micro
                         pc <= pc + arg;
                     end
 
+                    // In the next stage we deal with STORE instructions, by
+                    // asserting the write line. We want the WData and the addr
+                    // to be stable by then, so set them up here.
+                    // There are two options:
+                    //  1) STORE - address is the instruction argument
+                    //             WData is the accumulator
+                    //             We're already set up with this from the previous stage.
+
+                    //  2) STOREI - address is the accumulator
+                    //              WData is the instruction argument (immediat
+                    if ((decodeOp == Operation_STORE) &&
+                        decodeImm) begin
+                        _oDataMemAddr <= accumulator;
+                        _oDataMemWData <= arg;
+                    end
+
                     state <= State_EXWB;
                 end
 
                 State_EXWB: begin
+                    // if we are a store, then assert the WE pin now
+                    // deasserted on the next clock.
+                    if (decodeOp == Operation_STORE) begin
+                        _oDataMemWrite <= 1;
+                    end
+
                     // Update the accumulator and flags
                     if (decodeOp == Operation_LOAD) begin
                         if (decodeImm) begin
