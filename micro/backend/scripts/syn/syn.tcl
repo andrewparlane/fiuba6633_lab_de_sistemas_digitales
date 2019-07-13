@@ -21,27 +21,6 @@ puts "INFO: Starting synthesis process."
 set scripts_path "../../../scripts/syn"
 
 #################################################################################
-# Default synthesis options
-#################################################################################
-# ----- Optimization options -----
-set flat_design            "false"
-set constraint_design      "true"
-set constraints_first      "false"
-set remove_assigns         "true"
-
-# ----- Low power options -----
-set insert_clk_gating      "true"
-set clk_gating_min_num     3
-set dynamic_optimization   "false"
-set xor_gating             "false"
-
-# ----- DFT options -----
-set scan_design            "false"
-set scan_chains_num        1
-set non_inverting_scan     "false"
-set fix_dft_violations     "false"
-
-#################################################################################
 # Set system variables
 #################################################################################
 set access_internal_pins   "true"
@@ -112,13 +91,9 @@ puts ""
 #############################################################################
 # Create list of RTL files
 #############################################################################
-set rtl_files_v     [find_files ${rtl_dir} "*.v"]
-set rtl_files_vhdl  [find_files ${rtl_dir} "*.vhd"]
 set rtl_files_sv    [find_files ${rtl_dir} "*.sv"]
 set pkg_files_sv    [find_files ${pkg_dir} "*.sv"]
-set header_files_v  [find_files ${rtl_dir} "*.vh"]
-set header_files_sv [find_files ${rtl_dir} "*.svh"]
-if {${rtl_files_v}=="" && ${rtl_files_vhdl}=="" && ${rtl_files_sv}==""} {
+if {${rtl_files_sv}==""} {
    puts "ERROR: No RTL files found in source directory."
    puts ""
    puts ""
@@ -127,18 +102,11 @@ if {${rtl_files_v}=="" && ${rtl_files_vhdl}=="" && ${rtl_files_sv}==""} {
 }
 
 puts "INFO: RTL file list in source directory"
-foreach filename ${rtl_files_v} {
-   set filename [split ${filename} "/"]
-   set filename [lindex ${filename} end]
-   puts "         ${filename}"
-}
-foreach filename ${rtl_files_vhdl} {
-   set filename [split ${filename} "/"]
-   set filename [lindex ${filename} end]
-   puts "         ${filename}"
-}
 foreach filename ${pkg_files_sv} {
-   # remove from rtl_files_sv
+   # find_files is recursive, so rtl_files_sv includes all the packages too
+   # However the packages have to be compiled before any source that uses it
+   # so here we remove the packages from the rtl_files_sv list, and add them
+   # first in the list of files
    set rtl_files_sv [lsearch -all -inline -not -exact $rtl_files_sv $filename]
 
    set filename [split ${filename} "/"]
@@ -146,16 +114,6 @@ foreach filename ${pkg_files_sv} {
    puts "         ${filename}"
 }
 foreach filename ${rtl_files_sv} {
-   set filename [split ${filename} "/"]
-   set filename [lindex ${filename} end]
-   puts "         ${filename}"
-}
-foreach filename ${header_files_v} {
-   set filename [split ${filename} "/"]
-   set filename [lindex ${filename} end]
-   puts "         ${filename}"
-}
-foreach filename ${header_files_sv} {
    set filename [split ${filename} "/"]
    set filename [lindex ${filename} end]
    puts "         ${filename}"
@@ -178,14 +136,13 @@ foreach max_lib ${target_max_libs} {
 set_app_var symbol_library ${generic_lib}
 set mw_design_lib ../../../dgen/syn/db/mw/${block_name}
 
-if {![file isdirectory ${mw_design_lib}]} {
-   create_mw_lib -technology ${mw_techfile} -mw_reference_library ${milkyway_ref_lib} ${mw_design_lib}
-} else {
+if {[file isdirectory ${mw_design_lib}]} {
    sh rm -rf ${mw_design_lib}
-   create_mw_lib -technology ${mw_techfile} -mw_reference_library ${milkyway_ref_lib} ${mw_design_lib}
 }
+create_mw_lib -technology ${mw_techfile} -mw_reference_library ${milkyway_ref_lib} ${mw_design_lib}
 open_mw_lib ${mw_design_lib}
 check_library
+
 set_tlu_plus_files \
    -max_tluplus ${tlup_max_file} \
    -min_tluplus ${tlup_min_file} \
@@ -197,12 +154,6 @@ define_design_lib WORK -path "./"
 # Read RTL files
 ###############################################################################
 puts "INFO: Reading RTL files..."
-if {${rtl_files_v}!=""} {
-   analyze -library WORK -format verilog ${rtl_files_v}
-}
-if {${rtl_files_vhdl}!=""} {
-   analyze -library WORK -format vhdl ${rtl_files_vhdl}
-}
 if {${pkg_files_sv}!=""} {
    analyze -library WORK -format sverilog ${pkg_files_sv}
 }
@@ -372,9 +323,9 @@ if {!${scan_design}} {
       }
       if {!${flat_design}} {
          if {${xor_gating}} {
-            compile_ultra -no_autoung -incremental -gate_clock -self_gating
+            compile_ultra -no_autoungroup -incremental -gate_clock -self_gating
          } else {
-            compile_ultra -no_autoung -incremental -gate_clock
+            compile_ultra -no_autoungroup -incremental -gate_clock
          }
       } else {
          if {${xor_gating}} {
@@ -622,7 +573,8 @@ write -hierarchy -format verilog -output "../../../dgen/syn/netlist/${block_name
 ###############################################################################
 # Write SDC for P&R
 ###############################################################################
-set_propagated_clock [all_clocks]
+#set_propagated_clock [all_clocks]
+#remove_propagated_clock [all_clocks]
 write_sdc ../../../dgen/syn/sdc/constraints.sdc
 
 ###############################################################################

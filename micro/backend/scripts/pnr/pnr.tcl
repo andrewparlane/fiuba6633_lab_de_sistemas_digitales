@@ -80,12 +80,11 @@ foreach max_lib ${target_max_libs} {
 set_app_var symbol_library ${generic_lib}
 set mw_design_lib ../../../dgen/pnr/db/mw/${block_name}
 
-if {![file isdirectory ${mw_design_lib}]} {
-   create_mw_lib -technology ${mw_techfile} -mw_reference_library ${milkyway_ref_lib} ${mw_design_lib}
-} else {
+if {[file isdirectory ${mw_design_lib}]} {
    sh rm -rf ${mw_design_lib}
-   create_mw_lib -technology ${mw_techfile} -mw_reference_library ${milkyway_ref_lib} ${mw_design_lib}
 }
+create_mw_lib -technology ${mw_techfile} -mw_reference_library ${milkyway_ref_lib} ${mw_design_lib}
+
 open_mw_lib ${mw_design_lib}
 check_library
 set_tlu_plus_files \
