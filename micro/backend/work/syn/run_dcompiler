@@ -83,7 +83,7 @@ export SYNOPSYS=${DCOMPILER_PATH}
 export SNPSLMD_LICENSE_FILE=1718@credenciales
 DCOMPILER_PATH=/usr/synopsys/J-2014.09-SP5-3/design_compiler
 
-rm -rf ../../dgen
+rm -rf ../../dgen/syn
 mkdir -p ../../dgen/syn/db/mw/micro
 mkdir -p ../../dgen/syn/db/generic
 mkdir -p ../../dgen/syn/netlist

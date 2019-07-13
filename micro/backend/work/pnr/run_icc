@@ -75,8 +75,6 @@ tcl_file="pnr.tcl"
 mkdir -p temp
 cat "${tcl_path}${tcl_file}" > temp/temp.tcl
 
-rm ../../dgen/pnr/reports/*
-
 echo ""
 echo "INFO: Grabing IC Compiler license..."
 echo ""
@@ -84,6 +82,16 @@ echo ""
 export SYNOPSYS=${DCOMPILER_PATH}
 export SNPSLMD_LICENSE_FILE=1718@credenciales
 ICC_PATH=/usr/synopsys/J-2014.09-SP5-1/ic_compiler
+
+rm -rf ../../dgen/pnr
+mkdir -p ../../dgen/pnr/db/mw
+mkdir -p ../../dgen/pnr/reports
+mkdir -p ../../dgen/pnr/db/mw
+mkdir -p ../../dgen/pnr/def
+mkdir -p ../../dgen/pnr/netlist
+mkdir -p ../../dgen/pnr/sdf
+mkdir -p ../../dgen/pnr/spef
+mkdir -p ../../dgen/pnr/gds
 
 cd temp
 if [ ${interact} == 1 ]; then
