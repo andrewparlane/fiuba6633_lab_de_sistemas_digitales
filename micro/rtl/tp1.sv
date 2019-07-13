@@ -132,7 +132,6 @@ module micro
                     // all of those use the instruction argument as the address to
                     // read from. There's no harm in always reading, so just do it.
                     _oDataMemAddr <= _iInstMemData;
-                    _oDataMemWData <= accumulator;
 
                     // The next pc is pc + 2
                     // unless there's a jump, in which case it's
@@ -158,17 +157,20 @@ module micro
                     // In the next stage we deal with STORE instructions, by
                     // asserting the write line. We want the WData and the addr
                     // to be stable by then, so set them up here.
-                    // There are two options:
-                    //  1) STORE - address is the instruction argument
-                    //             WData is the accumulator
-                    //             We're already set up with this from the previous stage.
-
-                    //  2) STOREI - address is the accumulator
-                    //              WData is the instruction argument (immediat
-                    if ((decodeOp == Operation_STORE) &&
-                        decodeImm) begin
-                        _oDataMemAddr <= accumulator;
-                        _oDataMemWData <= arg;
+                    if (decodeOp == Operation_STORE) begin
+                        // There are two options:
+                        //  1) STOREI - address is the accumulator
+                        //              WData is the instruction argument (immediat
+                        if (decodeImm) begin
+                            _oDataMemAddr <= accumulator;
+                            _oDataMemWData <= arg;
+                        end
+                        //  2) STORE - address is the instruction argument
+                        //             WData is the accumulator
+                        else begin
+                            _oDataMemAddr <= arg;
+                            _oDataMemWData <= accumulator;
+                        end
                     end
 
                     state <= State_EXWB;
